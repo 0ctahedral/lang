@@ -39,9 +39,6 @@ struct Token {
 // lexes a file from a character pointer
 struct Lexer {
 
-  // Start the lexer with a source string
-  Lexer(const char* src) : buffer(src), loc({}), state(start) { }
-
   // buffer to read from
   const char* buffer;
 
@@ -51,11 +48,11 @@ struct Lexer {
   // current token we are working on
   Token pending = {};
 
-  State state = {};
+  State state = State::start;
 
-  // retrieves the next token in the buffer
-  Token next();
 };
 
+// retrieves the next token in the buffer
+Token next(Lexer*);
 
 #endif

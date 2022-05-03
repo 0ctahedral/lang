@@ -14,20 +14,20 @@ inline bool is_alpha(uint8_t c) {
     (c >= 'A' && c <= 'Z');
 }
 
-Token Lexer::next() {
-  pending = Token{invalid};
-  state = start;
+Token next(Lexer* l) {
+  l->pending = Token{invalid};
+  l->state = State::start;
 
   Token result = Token{
     .tag = eof,
-    .start = loc,
+    .start = l->loc,
   };
   uint8_t c;
   bool set_start = false;
   for (;;) {
-    c = buffer[loc.offset];
+    c = l->buffer[l->loc.offset];
 
-    switch (state) {
+    switch (l->state) {
       case start:
         if (c == 0) {
           goto loop_end;
@@ -38,12 +38,12 @@ Token Lexer::next() {
         //  state = zero;
         } else if (is_digit(c)) {
           result.tag = int_literal;
-          state = int_literal_dec;
+          l->state = int_literal_dec;
         } else {
           result.tag = invalid;
-          result.end = loc;
-          loc.column += 1;
-          loc.offset += 1;
+          result.end = l->loc;
+          l->loc.column += 1;
+          l->loc.offset += 1;
           return result;
         }
         break;
@@ -62,22 +62,22 @@ Token Lexer::next() {
     };
 
     if (c == '\n') {
-      loc.line += 1;
-      loc.column = 0;
-      loc.offset += 1;
+      l->loc.line += 1;
+      l->loc.column = 0;
+      l->loc.offset += 1;
     } else {
-      loc.column += 1;
-      loc.offset += 1;
+      l->loc.column += 1;
+      l->loc.offset += 1;
     }
 
     if (set_start) {
-      result.start = loc;
+      result.start = l->loc;
       set_start = false;
     }
   }
 
   loop_end:
 
-  result.end = loc;
+  result.end = l->loc;
   return result;
 }

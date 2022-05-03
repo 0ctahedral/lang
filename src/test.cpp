@@ -2,15 +2,15 @@
 #include <cassert>
 #include "lexer.hpp"
 
-void test_lex(const char* name, const char* str, void(*fn)(Lexer lex)) {
-  Lexer lex = Lexer(str);
+void test_lex(const char* name, const char* str, void(*fn)(Lexer* lex)) {
+  Lexer lex = {str};
   printf("[%s]", name);
-  fn(lex);
+  fn(&lex);
   printf("\n");
 }
 
-void test_next(Lexer& lex, Token t) {
-  Token n = lex.next();
+void test_next(Lexer* lex, Token t) {
+  Token n = next(lex);
 
   if (!(
     n.tag == t.tag &&
@@ -42,11 +42,11 @@ void test_next(Lexer& lex, Token t) {
 }
 
 int main(int argc, char** argv) {
-  test_lex("empty", "", [](Lexer lex){
+  test_lex("empty", "", [](Lexer* lex){
     test_next(lex, {});
   });
 
-  test_lex("five", "5", [](Lexer lex){
+  test_lex("five", "5", [](Lexer* lex){
     test_next(lex, {
           .tag = Tag::int_literal,
           .start = {0, 0, 0},
@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
     });
   });
 
-  test_lex("int_with_letter", "5a", [](Lexer lex){
+  test_lex("int_with_letter", "5a", [](Lexer* lex){
     test_next(lex, {
           .tag = Tag::invalid,
           .start = {0, 0, 0},
@@ -67,7 +67,7 @@ int main(int argc, char** argv) {
     });
   });
 
-  test_lex("ints_with_space", "5   7", [](Lexer lex){
+  test_lex("ints_with_space", "5   7", [](Lexer* lex){
     test_next(lex, {
           .tag = Tag::int_literal,
           .start = {0, 0, 0},
@@ -80,7 +80,7 @@ int main(int argc, char** argv) {
     });
   });
 
-  test_lex("ints_with_newline", "53555\n7", [](Lexer lex){
+  test_lex("ints_with_newline", "53555\n7", [](Lexer* lex){
     test_next(lex, {
           .tag = Tag::int_literal,
           .start = {0, 0, 0},
