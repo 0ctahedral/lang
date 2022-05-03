@@ -4,7 +4,7 @@
 #define lexer_h
 
 enum Tag : uint8_t {
-  num_int,
+  int_literal,
 
   eof,
   invalid,
@@ -15,15 +15,17 @@ enum State : uint8_t {
   start,
 
   // beginning an int literal
-  int_literal,
+  int_literal_dec,
+  // just saw a zero
+  zero,
 };
 
 // Source location in file
 // start and end offset in bytes in the current buffer
 struct Loc {
-  uint64_t offset = 0;
   uint64_t line = 0;
   uint64_t column = 0;
+  uint64_t offset = 0;
 };
 
 // Where a token occured in a file
@@ -38,7 +40,7 @@ struct Token {
 struct Lexer {
 
   // Start the lexer with a source string
-  Lexer(const char* src) : buffer(src) { }
+  Lexer(const char* src) : buffer(src), loc({}), state(start) { }
 
   // buffer to read from
   const char* buffer;
@@ -47,15 +49,12 @@ struct Lexer {
   Loc loc = {};
 
   // current token we are working on
-  Token t = {};
+  Token pending = {};
 
   State state = {};
 
   // retrieves the next token in the buffer
   Token next();
-
-  // helper for repetitive code
-  void begin_token(Tag);
 };
 
 
