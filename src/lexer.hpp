@@ -45,6 +45,7 @@ enum Tag : uint8_t {
   
   // numbers
   int_literal,
+  float_literal,
 
 };
 
@@ -52,10 +53,13 @@ enum State : uint8_t {
   // starting a token
   start,
 
-  // beginning an int literal
-  int_literal_dec,
   // just saw a zero
   zero,
+  int_literal_dec,
+  // procesing decimal
+  num_dot,
+  // part after the decimal
+  float_fraction_dec,
 };
 
 // Source location in file
@@ -125,6 +129,9 @@ static inline const char* lexeme(Tag t) {
   case angle_left: return "<";
   case angle_right: return ">";
   case question_mark: return "?";
+
+  case int_literal: return "int_literal";
+  case float_literal: return "float_literal";
   default: return "none";
   }
 }

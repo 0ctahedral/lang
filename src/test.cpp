@@ -21,15 +21,15 @@ void test_next(Lexer* lex, Token t) {
     n.end.column == t.end.column &&
     n.end.offset == t.end.offset
   )) {
-      printf("\nexpected tag: %d, start: {%ld, %ld, %ld} end: {%ld, %ld, %ld}\ngot      tag: %d, start: {%ld, %ld, %ld} end: {%ld, %ld, %ld}\n",
-          t.tag,
+      printf("\nexpected tag: %s, start: {%ld, %ld, %ld} end: {%ld, %ld, %ld}\ngot      tag: %s, start: {%ld, %ld, %ld} end: {%ld, %ld, %ld}\n",
+          lexeme(t.tag),
           t.start.line,
           t.start.column,
           t.start.offset,
           t.end.line,
           t.end.column,
           t.end.offset,
-          n.tag,
+          lexeme(n.tag),
           n.start.line,
           n.start.column,
           n.start.offset,
@@ -68,7 +68,39 @@ void lexer_tests() {
     });
   });
 
-  test_lex("int_with_letter", "5a", [](Lexer* lex){
+  test_lex("invalid_int_with_letter", "5a", [](Lexer* lex){
+    test_next(lex, {
+          .tag = Tag::invalid,
+          .start = {0, 0, 0},
+          .end = {0, 2, 2}
+    });
+  });
+
+  test_lex("int_with_leading_zero", "05", [](Lexer* lex){
+    test_next(lex, {
+          .tag = Tag::int_literal,
+          .start = {0, 0, 0},
+          .end = {0, 2, 2}
+    });
+  });
+
+  test_lex("float_literal", "0.5", [](Lexer* lex){
+    test_next(lex, {
+          .tag = Tag::float_literal,
+          .start = {0, 0, 0},
+          .end = {0, 3, 3}
+    });
+  });
+
+  test_lex("longer_float_literal", "056.513890", [](Lexer* lex){
+    test_next(lex, {
+          .tag = Tag::float_literal,
+          .start = {0, 0, 0},
+          .end = {0, 10, 10}
+    });
+  });
+
+  test_lex("invalid_float_literal_no_frac", "5.", [](Lexer* lex){
     test_next(lex, {
           .tag = Tag::invalid,
           .start = {0, 0, 0},
@@ -135,7 +167,7 @@ void lexer_tests() {
     });
   });
 
-  test_lex("symbols", "`~!@#$%^&*+-=;:/\\|,.<>?", [](Lexer* lex) {
+  test_lex("symbols", "`~!@#$%^&*+-;=:/\\|,.<>?", [](Lexer* lex) {
     test_next(lex, grave);
     test_next(lex, tilde);
     test_next(lex, bang);
@@ -148,8 +180,8 @@ void lexer_tests() {
     test_next(lex, asterisk);
     test_next(lex, plus);
     test_next(lex, minus);
-    test_next(lex, equals);
     test_next(lex, semi_colon);
+    test_next(lex, equals);
     test_next(lex, colon);
     test_next(lex, slash);
     test_next(lex, backslash);
@@ -159,6 +191,18 @@ void lexer_tests() {
     test_next(lex, angle_left);
     test_next(lex, angle_right);
     test_next(lex, question_mark);
+  });
+
+  test_lex("arithemetic", "4 + 6 * (88 / 9.05)", [](Lexer* lex) {
+    test_next(lex, int_literal);
+    test_next(lex, plus);
+    test_next(lex, int_literal);
+    test_next(lex, asterisk);
+    test_next(lex, l_paren);
+    test_next(lex, int_literal);
+    test_next(lex, slash);
+    test_next(lex, float_literal);
+    test_next(lex, r_paren);
   });
 }
 
