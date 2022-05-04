@@ -204,9 +204,37 @@ void lexer_tests() {
     test_next(lex, float_literal);
     test_next(lex, r_paren);
   });
+
+  test_lex("identifier_", "foo_bar134", [](Lexer* lex) {
+    test_next(lex, {
+          .tag = Tag::identifier,
+          .start = {0, 0, 0},
+          .end = {0, 10, 10}
+    });
+  });
+  test_lex("identifier-", "foo-bar134", [](Lexer* lex) {
+    test_next(lex, {
+          .tag = Tag::identifier,
+          .start = {0, 0, 0},
+          .end = {0, 10, 10}
+    });
+  });
+  test_lex("identifiers", "foo bar134", [](Lexer* lex) {
+    test_next(lex, {
+          .tag = Tag::identifier,
+          .start = {0, 0, 0},
+          .end = {0, 3, 3}
+    });
+    test_next(lex, {
+          .tag = Tag::identifier,
+          .start = {0, 4, 0},
+          .end = {0, 10, 10}
+    });
+  });
 }
 
 int main(int argc, char** argv) {
+  // TODO: eof on all these tests
   lexer_tests();
 
   return 0;

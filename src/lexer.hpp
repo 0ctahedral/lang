@@ -41,7 +41,7 @@ enum Tag : uint8_t {
   angle_right,
   question_mark,
 
-  // 
+  identifier,
   
   // numbers
   int_literal,
@@ -60,6 +60,8 @@ enum State : uint8_t {
   num_dot,
   // part after the decimal
   float_fraction_dec,
+
+  identifier_dec,
 };
 
 // Source location in file

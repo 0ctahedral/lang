@@ -50,6 +50,9 @@ Token next(Lexer* l) {
           l->loc.offset += 1;
           result.start = l->loc;
           continue;
+        } else if (is_alpha(c)) {
+          result.tag = identifier;
+          l->state = identifier_dec;
         } else if (is_whitespace(c)) {
           inc_loc(l);
           result.start = l->loc;
@@ -230,7 +233,14 @@ Token next(Lexer* l) {
         } else {
           goto loop_end;
         }
+        break;
 
+      case identifier_dec: 
+        if (is_alpha(c) || is_digit(c) || c == '_' || c == '-') {
+        } else {
+          // TODO: check against keywords
+          goto loop_end;
+        }
         break;
     };
 
