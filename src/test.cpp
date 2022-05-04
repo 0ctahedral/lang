@@ -45,7 +45,7 @@ void test_next(Lexer* lex, Token t) {
 void test_next(Lexer* lex, Tag t) {
   Token n = next(lex);
   if (n.tag != t) {
-    printf("\nexpected: %d, got %d\n", t, n.tag);
+    printf("\nexpected: %s, got %s\n", lexeme(t), lexeme(n.tag));
     assert(false);
   }
 }

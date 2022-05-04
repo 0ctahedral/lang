@@ -93,4 +93,40 @@ struct Lexer {
 // retrieves the next token in the buffer
 Token next(Lexer*);
 
+static inline const char* lexeme(Tag t) {
+  switch (t) {
+  case invalid: return "invalid";
+  case l_paren: return "(";
+  case r_paren: return ")";
+  case l_bracket: return "[";
+  case r_bracket: return "]";
+  case l_brace: return "{";
+  case r_brace: return "}";
+  case grave: return "`";
+  case tilde: return "~";
+  case bang: return "!";
+  case at: return "@";
+  case pound: return "#";
+  case dollar: return "$";
+  case percent: return "%";
+  case caret: return "^";
+  case ampersand: return "&";
+  case asterisk: return "*";
+  case plus: return "+";
+  case minus: return "-";
+  case equals: return "=";
+  case semi_colon: return ";";
+  case colon: return ":";
+  case slash: return "/";
+  case backslash: return "\\";
+  case pipe: return "|";
+  case comma: return ",";
+  case period: return ".";
+  case angle_left: return "<";
+  case angle_right: return ">";
+  case question_mark: return "?";
+  default: return "none";
+  }
+}
+
 #endif
