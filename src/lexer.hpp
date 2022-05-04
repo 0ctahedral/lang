@@ -4,10 +4,48 @@
 #define lexer_h
 
 enum Tag : uint8_t {
+  eof,
+
+  // invalid stuff
+  invalid,
+
+  // simple characters
+  l_paren,
+  r_paren,
+  l_bracket,
+  r_bracket,
+  l_brace,
+  r_brace,
+
+  grave,
+  tilde,
+  bang,
+  at,
+  pound,
+  dollar,
+  percent,
+  caret,
+  ampersand,
+  asterisk,
+  plus,
+  minus,
+  equals,
+  semi_colon,
+  colon,
+  slash,
+  backslash,
+  pipe,
+  comma,
+  period,
+  angle_left,
+  angle_right,
+  question_mark,
+
+  // 
+  
+  // numbers
   int_literal,
 
-  eof,
-  invalid,
 };
 
 enum State : uint8_t {

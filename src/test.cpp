@@ -41,7 +41,16 @@ void test_next(Lexer* lex, Token t) {
     }
 }
 
-int main(int argc, char** argv) {
+
+void test_next(Lexer* lex, Tag t) {
+  Token n = next(lex);
+  if (n.tag != t) {
+    printf("\nexpected: %d, got %d\n", t, n.tag);
+    assert(false);
+  }
+}
+
+void lexer_tests() {
   test_lex("empty", "", [](Lexer* lex){
     test_next(lex, {});
   });
@@ -92,6 +101,69 @@ int main(int argc, char** argv) {
           .end = {1, 1, 7}
     });
   });
+
+  test_lex("braces_bracks_parens", "{[()]}", [](Lexer* lex){
+    test_next(lex, {
+          .tag = Tag::l_brace,
+          .start = {0, 0, 0},
+          .end = {0, 1, 1}
+    });
+    test_next(lex, {
+          .tag = Tag::l_bracket,
+          .start = {0, 1, 1},
+          .end = {0, 2, 2}
+    });
+    test_next(lex, {
+          .tag = Tag::l_paren,
+          .start = {0, 2, 2},
+          .end =   {0, 3, 3}
+    });
+    test_next(lex, {
+          .tag = Tag::r_paren,
+          .start = {0, 3, 3},
+          .end =   {0, 4, 4}
+    });
+    test_next(lex, {
+          .tag = Tag::r_bracket,
+          .start = {0, 4, 4},
+          .end =   {0, 5, 5}
+    });
+    test_next(lex, {
+          .tag = Tag::r_brace,
+          .start = {0, 5, 5},
+          .end =   {0, 6, 6}
+    });
+  });
+
+  test_lex("symbols", "`~!@#$%^&*+-=;:/\\|,.<>?", [](Lexer* lex) {
+    test_next(lex, grave);
+    test_next(lex, tilde);
+    test_next(lex, bang);
+    test_next(lex, at);
+    test_next(lex, pound);
+    test_next(lex, dollar);
+    test_next(lex, percent);
+    test_next(lex, caret);
+    test_next(lex, ampersand);
+    test_next(lex, asterisk);
+    test_next(lex, plus);
+    test_next(lex, minus);
+    test_next(lex, equals);
+    test_next(lex, semi_colon);
+    test_next(lex, colon);
+    test_next(lex, slash);
+    test_next(lex, backslash);
+    test_next(lex, pipe);
+    test_next(lex, comma);
+    test_next(lex, period);
+    test_next(lex, angle_left);
+    test_next(lex, angle_right);
+    test_next(lex, question_mark);
+  });
+}
+
+int main(int argc, char** argv) {
+  lexer_tests();
 
   return 0;
 }
